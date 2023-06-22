@@ -289,10 +289,26 @@ type Resolver @entity {
   addr: Account
   "The content hash for this resolver, in binary format"
   contentHash: Bytes
-  "The set of observed text record keys for this resolver"
-  texts: [String!]
   "The set of observed SLIP-44 coin types for this resolver"
   coinTypes: [BigInt!]
+  "The URL for this token"
+  url: String
+  "The avatar for this token"
+  avatar: String
+  "The description for this token"
+  description: String
+  "The keywords for this token"
+  keywords: String
+  "The twitter handle for this token"
+  twitter: String
+  "The github handle for this token"
+  github: String
+  "The name for this token"
+  name: String
+  "The decimals for this token"
+  decimals: String
+  "The version for this token"
+  version: String
   "The events associated with this resolver"
   events: [ResolverEvent!]! @derivedFrom(field: "resolver")
 }
