@@ -1,8 +1,6 @@
-specVersion: 0.0.4
-description: >-
-  A secure & decentralized way to address resources on and off the blockchain
-  using simple, human-readable names. Access domains and transfer history.
-repository: "https://github.com/ensdomains/ens-subgraph"
+specVersion: 0.0.5
+description: A fork of the ENS subgraph that houses only the TKN data
+repository: ""
 schema:
   file: ./schema.graphql
 dataSources:
@@ -93,8 +91,9 @@ dataSources:
         - event: "AddressChanged(indexed bytes32,uint256,bytes)"
           handler: handleMulticoinAddrChanged
         - event: >-
-            AuthorisationChanged(indexed bytes32,indexed address,indexed
-            address,bool)
+            AuthorisationChanged(indexed bytes32,indexed address,indexed address,bool)
+
+
           handler: handleAuthorisationChanged
         - event: "ContenthashChanged(indexed bytes32,bytes)"
           handler: handleContentHashChanged
@@ -156,8 +155,9 @@ dataSources:
           file: ./abis/EthRegistrarControllerOld.json
       eventHandlers:
         - event: >-
-            NameRegistered(string,indexed bytes32,indexed
-            address,uint256,uint256)
+            NameRegistered(string,indexed bytes32,indexed address,uint256,uint256)
+
+
           handler: handleNameRegisteredByControllerOld
         - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"
           handler: handleNameRenewedByController
@@ -180,8 +180,9 @@ dataSources:
           file: ./abis/EthRegistrarController.json
       eventHandlers:
         - event: >-
-            NameRegistered(string,indexed bytes32,indexed
-            address,uint256,uint256,uint256)
+            NameRegistered(string,indexed bytes32,indexed address,uint256,uint256,uint256)
+
+
           handler: handleNameRegisteredByController
         - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"
           handler: handleNameRenewedByController
