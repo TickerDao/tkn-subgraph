@@ -74,3 +74,4 @@ typings/
 .idea
 
 /tests/.bin
+generated

@@ -1,14 +1,7 @@
 // Import types and APIs from graph-ts
-import { BigInt, ByteArray, Bytes, crypto, ens } from "@graphprotocol/graph-ts";
+import {BigInt, ByteArray, Bytes, crypto, ens} from "@graphprotocol/graph-ts";
 
-import {
-  byteArrayFromHex,
-  checkValidLabel,
-  concat,
-  createEventID,
-  ETH_NODE,
-  uint256ToByteArray,
-} from "./utils";
+import {byteArrayFromHex, checkValidLabel, concat, createEventID, ETH_NODE, uint256ToByteArray} from "./utils";
 
 // Import event types from the registry contract ABI
 import {
@@ -17,7 +10,7 @@ import {
   Transfer as TransferEvent,
 } from "./types/BaseRegistrar/BaseRegistrar";
 
-import { NameRegistered as ControllerNameRegisteredEventOld } from "./types/EthRegistrarControllerOld/EthRegistrarControllerOld";
+import {NameRegistered as ControllerNameRegisteredEventOld} from "./types/EthRegistrarControllerOld/EthRegistrarControllerOld";
 
 import {
   NameRegistered as ControllerNameRegisteredEvent,
@@ -25,14 +18,7 @@ import {
 } from "./types/EthRegistrarController/EthRegistrarController";
 
 // Import entity types generated from the GraphQL schema
-import {
-  Account,
-  Domain,
-  NameRegistered,
-  NameRenewed,
-  NameTransferred,
-  Registration,
-} from "./types/schema";
+import {Account, Domain, NameRegistered, NameRenewed, NameTransferred, Registration} from "./types/schema";
 
 const GRACE_PERIOD_SECONDS = BigInt.fromI32(7776000); // 90 days
 
@@ -72,26 +58,16 @@ export function handleNameRegistered(event: NameRegisteredEvent): void {
   registrationEvent.save();
 }
 
-export function handleNameRegisteredByControllerOld(
-  event: ControllerNameRegisteredEventOld
-): void {
-  setNamePreimage(event.params.name, event.params.label, event.params.cost);
+export function handleNameRegisteredByControllerOld(event: ControllerNameRegisteredEventOld): void {
+  if (event.params.name == "tkn") setNamePreimage(event.params.name, event.params.label, event.params.cost);
 }
 
-export function handleNameRegisteredByController(
-  event: ControllerNameRegisteredEvent
-): void {
-  setNamePreimage(
-    event.params.name,
-    event.params.label,
-    event.params.baseCost.plus(event.params.premium)
-  );
+export function handleNameRegisteredByController(event: ControllerNameRegisteredEvent): void {
+  if (event.params.name == "tkn") setNamePreimage(event.params.name, event.params.label, event.params.baseCost.plus(event.params.premium));
 }
 
-export function handleNameRenewedByController(
-  event: ControllerNameRenewedEvent
-): void {
-  setNamePreimage(event.params.name, event.params.label, event.params.cost);
+export function handleNameRenewedByController(event: ControllerNameRenewedEvent): void {
+  if (event.params.name == "tkn") setNamePreimage(event.params.name, event.params.label, event.params.cost);
 }
 
 function setNamePreimage(name: string, label: Bytes, cost: BigInt): void {
