@@ -17,6 +17,7 @@ type NewOwner @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+#com
 
 type NewResolver @entity(immutable: true) {
   id: Bytes!
