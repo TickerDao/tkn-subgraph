@@ -153,6 +153,34 @@ export function handleTextChangedWithValue(
     }
   }
 
+  if (event.params.key == "url") {
+    resolver.url = event.params.value;
+  }
+  if (event.params.key == "avatar") {
+    resolver.avatar = event.params.value;
+  }
+  if (event.params.key == "description") {
+    resolver.description = event.params.value;
+  }
+  if (event.params.key == "keywords") {
+    resolver.keywords = event.params.value;
+  }
+  if (event.params.key == "twitter") {
+    resolver.twitter = event.params.value;
+  }
+  if (event.params.key == "github") {
+    resolver.github = event.params.value;
+  }
+  if (event.params.key == "name") {
+    resolver.name = event.params.value;
+  }
+  if (event.params.key == "decimals") {
+    resolver.decimals = event.params.value;
+  }
+  if (event.params.key == "version") {
+    resolver.version = event.params.value;
+  }
+
   let resolverEvent = new TextChanged(createEventID(event));
   resolverEvent.resolver = createResolverID(event.params.node, event.address);
   resolverEvent.blockNumber = event.block.number.toI32();
@@ -239,8 +267,5 @@ function createEventID(event: ethereum.Event): string {
 }
 
 function createResolverID(node: Bytes, resolver: Address): string {
-  return resolver
-    .toHexString()
-    .concat("-")
-    .concat(node.toHexString());
+  return resolver.toHexString().concat("-").concat(node.toHexString());
 }
