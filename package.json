@@ -4,7 +4,7 @@
   "repository": "https://github.com/ensdomains/ens-subgraph",
   "license": "MIT",
   "scripts": {
-    "codegen": "graph codegen",
+    "codegen": "graph codegen --output-dir src/types/",
     "test": "graph test",
     "setup": "yarn codegen && yarn create-local && yarn deploy-local",
     "create-local": "graph create graphprotocol/ens --node http://127.0.0.1:8020",
