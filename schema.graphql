@@ -313,6 +313,22 @@ type Resolver @entity {
   version: String
   "The events associated with this resolver"
   events: [ResolverEvent!]! @derivedFrom(field: "resolver")
+  "The addresses for other chains for this resolver"
+  addresses: [ResolverAddress!]! @derivedFrom(field: "resolver")
+}
+
+"Entity representing the different addresses for the resolver"
+type ResolverAddress @entity {
+  "resolver ID + coinType"
+  id: ID!
+  "The ID of the resolver entity tied to this"
+  resolver: Resolver!
+  "The set of observed SLIP-44 coin types for this resolver"
+  coinType: BigInt
+  "The Name of the Chain"
+  chainName: String
+  "The address for the domain (token) on the referenced chain"
+  address: Bytes
 }
 
 interface ResolverEvent {
