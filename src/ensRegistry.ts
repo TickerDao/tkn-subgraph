@@ -1,7 +1,7 @@
 // Import types and APIs from graph-ts
-import { BigInt, crypto, ens } from "@graphprotocol/graph-ts";
+import {Address, BigInt, crypto, ens} from "@graphprotocol/graph-ts";
 
-import { concat, createEventID, EMPTY_ADDRESS, ROOT_NODE } from "./utils";
+import {concat, createEventID, EMPTY_ADDRESS, ROOT_NODE} from "./utils";
 
 // Import event types from the registry contract ABI
 import {
@@ -12,15 +12,7 @@ import {
 } from "./types/ENSRegistry/EnsRegistry";
 
 // Import entity types generated from the GraphQL schema
-import {
-  Account,
-  Domain,
-  NewOwner,
-  NewResolver,
-  NewTTL,
-  Resolver,
-  Transfer,
-} from "./types/schema";
+import {Account, Domain, NewOwner, NewResolver, NewTTL, Resolver, Transfer} from "./types/schema";
 
 const BIG_INT_ZERO = BigInt.fromI32(0);
 
@@ -36,10 +28,7 @@ function createDomain(node: string, timestamp: BigInt): Domain {
   return domain;
 }
 
-function getDomain(
-  node: string,
-  timestamp: BigInt = BIG_INT_ZERO
-): Domain | null {
+function getDomain(node: string, timestamp: BigInt = BIG_INT_ZERO): Domain | null {
   let domain = Domain.load(node);
   if (domain === null && node == ROOT_NODE) {
     return createDomain(node, timestamp);
@@ -49,15 +38,12 @@ function getDomain(
 }
 
 function makeSubnode(event: NewOwnerEvent): string {
-  return crypto
-    .keccak256(concat(event.params.node, event.params.label))
-    .toHexString();
+  return crypto.keccak256(concat(event.params.node, event.params.label)).toHexString();
 }
 
 function recurseDomainDelete(domain: Domain): string | null {
   if (
-    (domain.resolver == null ||
-      domain.resolver!.split("-")[0] == EMPTY_ADDRESS) &&
+    (domain.resolver == null || domain.resolver!.split("-")[0] == EMPTY_ADDRESS) &&
     domain.owner == EMPTY_ADDRESS &&
     domain.subdomainCount == 0
   ) {
@@ -109,10 +95,7 @@ function _handleNewOwner(event: NewOwnerEvent, isMigrated: boolean): void {
     if (label === null) {
       label = "[" + event.params.label.toHexString().slice(2) + "]";
     }
-    if (
-      event.params.node.toHexString() ==
-      "0x0000000000000000000000000000000000000000000000000000000000000000"
-    ) {
+    if (event.params.node.toHexString() == "0x0000000000000000000000000000000000000000000000000000000000000000") {
       domain.name = label;
     } else {
       parent = parent!;
@@ -223,7 +206,9 @@ export function handleNewTTL(event: NewTTLEvent): void {
 }
 
 export function handleNewOwner(event: NewOwnerEvent): void {
-  _handleNewOwner(event, true);
+  if (event.params.label == Address.fromString("DE0C1D6DBFBABD5AFF517A513D611C602B4DD4019C95AEB1094BBAA8BE785B71")) {
+    _handleNewOwner(event, true);
+  }
 }
 
 export function handleNewOwnerOldRegistry(event: NewOwnerEvent): void {
