@@ -1,7 +1,7 @@
 // Import types and APIs from graph-ts
 import {BigInt, ByteArray, Bytes, crypto, ens} from "@graphprotocol/graph-ts";
 
-import {byteArrayFromHex, checkValidLabel, concat, createEventID, ETH_NODE, uint256ToByteArray} from "./utils";
+import {byteArrayFromHex, checkValidLabel, concat, constants, createEventID, ETH_NODE, uint256ToByteArray} from "./utils";
 
 // Import event types from the registry contract ABI
 import {
@@ -30,6 +30,8 @@ export function handleNameRegistered(event: NameRegisteredEvent): void {
 
   let label = uint256ToByteArray(event.params.id);
   let registration = new Registration(label.toHex());
+
+  if (label != constants.TKN_LABEL) return;
   let domain = Domain.load(crypto.keccak256(concat(rootNode, label)).toHex())!;
 
   registration.domain = domain.id;

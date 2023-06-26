@@ -1,7 +1,7 @@
 // Import types and APIs from graph-ts
 import {Address, BigInt, crypto, ens} from "@graphprotocol/graph-ts";
 
-import {concat, createEventID, EMPTY_ADDRESS, ROOT_NODE} from "./utils";
+import {concat, constants, createEventID, EMPTY_ADDRESS, ROOT_NODE} from "./utils";
 
 // Import event types from the registry contract ABI
 import {
@@ -206,7 +206,7 @@ export function handleNewTTL(event: NewTTLEvent): void {
 }
 
 export function handleNewOwner(event: NewOwnerEvent): void {
-  if (event.params.label == Address.fromString("DE0C1D6DBFBABD5AFF517A513D611C602B4DD4019C95AEB1094BBAA8BE785B71")) {
+  if (event.params.label == constants.TKN_LABEL) {
     _handleNewOwner(event, true);
   }
 }
