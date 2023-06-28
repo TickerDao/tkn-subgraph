@@ -92,10 +92,7 @@ dataSources:
           handler: handleAddrChanged
         - event: "AddressChanged(indexed bytes32,uint256,bytes)"
           handler: handleMulticoinAddrChanged
-        - event: >-
-            AuthorisationChanged(indexed bytes32,indexed address,indexed address,bool)
-
-
+        - event: "AuthorisationChanged(indexed bytes32,indexed address,indexed address,bool)"
           handler: handleAuthorisationChanged
         - event: "ContenthashChanged(indexed bytes32,bytes)"
           handler: handleContentHashChanged
@@ -157,7 +154,6 @@ dataSources:
         - event: >-
             NameRegistered(string,indexed bytes32,indexed address,uint256,uint256)
 
-
           handler: handleNameRegisteredByControllerOld
         - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"
           handler: handleNameRenewedByController
@@ -181,7 +177,6 @@ dataSources:
       eventHandlers:
         - event: >-
             NameRegistered(string,indexed bytes32,indexed address,uint256,uint256,uint256)
-
 
           handler: handleNameRegisteredByController
         - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"

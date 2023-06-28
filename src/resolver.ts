@@ -1,4 +1,4 @@
-import {Address, Bytes, ethereum} from "@graphprotocol/graph-ts";
+import { Address, Bytes, ethereum } from "@graphprotocol/graph-ts";
 
 import {
   ABIChanged as ABIChangedEvent,
@@ -35,7 +35,9 @@ export function handleAddrChanged(event: AddrChangedEvent): void {
   let account = new Account(event.params.a.toHexString());
   account.save();
 
-  let resolver = new Resolver(createResolverID(event.params.node, event.address));
+  let resolver = new Resolver(
+    createResolverID(event.params.node, event.address)
+  );
   resolver.domain = event.params.node.toHexString();
   resolver.address = event.address;
   resolver.addr = event.params.a.toHexString();
@@ -73,7 +75,9 @@ export function handleMulticoinAddrChanged(event: AddressChangedEvent): void {
 
   let resolverAddress = ResolverAddress.load("id");
   if (!resolverAddress) {
-    resolverAddress = new ResolverAddress(resolver.id + "-" + coinType);
+    resolverAddress = new ResolverAddress(
+      resolver.id + "-" + coinType.toHexString()
+    );
     resolverAddress.resolver = resolver.id;
     resolverAddress.coinType = coinType;
   }
@@ -143,7 +147,9 @@ export function handleTextChanged(event: TextChangedEvent): void {
   resolverEvent.save();
 }
 
-export function handleTextChangedWithValue(event: TextChangedWithValueEvent): void {
+export function handleTextChangedWithValue(
+  event: TextChangedWithValueEvent
+): void {
   let resolver = getOrCreateResolver(event.params.node, event.address);
 
   let key = event.params.key;
@@ -171,11 +177,14 @@ export function handleTextChangedWithValue(event: TextChangedWithValueEvent): vo
   if (event.params.key == "keywords") {
     resolver.keywords = event.params.value;
   }
-  if (event.params.key == "twitter") {
+  if (event.params.key == "com.twitter") {
     resolver.twitter = event.params.value;
   }
-  if (event.params.key == "github") {
+  if (event.params.key == "com.github") {
     resolver.github = event.params.value;
+  }
+  if (event.params.key == "com.discord") {
+    resolver.discord = event.params.value;
   }
   if (event.params.key == "name") {
     resolver.name = event.params.value;
@@ -219,7 +228,9 @@ export function handleInterfaceChanged(event: InterfaceChangedEvent): void {
   resolverEvent.save();
 }
 
-export function handleAuthorisationChanged(event: AuthorisationChangedEvent): void {
+export function handleAuthorisationChanged(
+  event: AuthorisationChangedEvent
+): void {
   let resolverEvent = new AuthorisationChanged(createEventID(event));
   resolverEvent.blockNumber = event.block.number.toI32();
   resolverEvent.transactionID = event.transaction.hash;
@@ -271,8 +282,5 @@ function createEventID(event: ethereum.Event): string {
 }
 
 function createResolverID(node: Bytes, resolver: Address): string {
-  return resolver
-    .toHexString()
-    .concat("-")
-    .concat(node.toHexString());
+  return resolver.toHexString().concat("-").concat(node.toHexString());
 }

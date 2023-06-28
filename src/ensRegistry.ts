@@ -1,7 +1,14 @@
 // Import types and APIs from graph-ts
-import {Address, BigInt, crypto, ens} from "@graphprotocol/graph-ts";
+import { Address, BigInt, crypto, ens } from "@graphprotocol/graph-ts";
 
-import {concat, constants, createEventID, EMPTY_ADDRESS, ROOT_NODE} from "./utils";
+import {
+  concat,
+  constants,
+  createEventID,
+  EMPTY_ADDRESS,
+  ROOT_NODE,
+  TKN_DOMAIN,
+} from "./utils";
 
 // Import event types from the registry contract ABI
 import {
@@ -12,7 +19,15 @@ import {
 } from "./types/ENSRegistry/EnsRegistry";
 
 // Import entity types generated from the GraphQL schema
-import {Account, Domain, NewOwner, NewResolver, NewTTL, Resolver, Transfer} from "./types/schema";
+import {
+  Account,
+  Domain,
+  NewOwner,
+  NewResolver,
+  NewTTL,
+  Resolver,
+  Transfer,
+} from "./types/schema";
 
 const BIG_INT_ZERO = BigInt.fromI32(0);
 
@@ -28,7 +43,10 @@ function createDomain(node: string, timestamp: BigInt): Domain {
   return domain;
 }
 
-function getDomain(node: string, timestamp: BigInt = BIG_INT_ZERO): Domain | null {
+function getDomain(
+  node: string,
+  timestamp: BigInt = BIG_INT_ZERO
+): Domain | null {
   let domain = Domain.load(node);
   if (domain === null && node == ROOT_NODE) {
     return createDomain(node, timestamp);
@@ -38,12 +56,15 @@ function getDomain(node: string, timestamp: BigInt = BIG_INT_ZERO): Domain | nul
 }
 
 function makeSubnode(event: NewOwnerEvent): string {
-  return crypto.keccak256(concat(event.params.node, event.params.label)).toHexString();
+  return crypto
+    .keccak256(concat(event.params.node, event.params.label))
+    .toHexString();
 }
 
 function recurseDomainDelete(domain: Domain): string | null {
   if (
-    (domain.resolver == null || domain.resolver!.split("-")[0] == EMPTY_ADDRESS) &&
+    (domain.resolver == null ||
+      domain.resolver!.split("-")[0] == EMPTY_ADDRESS) &&
     domain.owner == EMPTY_ADDRESS &&
     domain.subdomainCount == 0
   ) {
@@ -95,7 +116,10 @@ function _handleNewOwner(event: NewOwnerEvent, isMigrated: boolean): void {
     if (label === null) {
       label = "[" + event.params.label.toHexString().slice(2) + "]";
     }
-    if (event.params.node.toHexString() == "0x0000000000000000000000000000000000000000000000000000000000000000") {
+    if (
+      event.params.node.toHexString() ==
+      "0x0000000000000000000000000000000000000000000000000000000000000000"
+    ) {
       domain.name = label;
     } else {
       parent = parent!;
@@ -129,17 +153,18 @@ export function handleTransfer(event: TransferEvent): void {
   account.save();
 
   // Update the domain owner
-  let domain = getDomain(node)!;
+  let domain = getDomain(node);
+  if (domain) {
+    domain.owner = event.params.owner.toHexString();
+    saveDomain(domain);
 
-  domain.owner = event.params.owner.toHexString();
-  saveDomain(domain);
-
-  let domainEvent = new Transfer(createEventID(event));
-  domainEvent.blockNumber = event.block.number.toI32();
-  domainEvent.transactionID = event.transaction.hash;
-  domainEvent.domain = node;
-  domainEvent.owner = event.params.owner.toHexString();
-  domainEvent.save();
+    let domainEvent = new Transfer(createEventID(event));
+    domainEvent.blockNumber = event.block.number.toI32();
+    domainEvent.transactionID = event.transaction.hash;
+    domainEvent.domain = node;
+    domainEvent.owner = event.params.owner.toHexString();
+    domainEvent.save();
+  }
 }
 
 // Handler for NewResolver events
@@ -158,26 +183,27 @@ export function handleNewResolver(event: NewResolverEvent): void {
   }
 
   let node = event.params.node.toHexString();
-  let domain = getDomain(node)!;
-  domain.resolver = id;
+  let domain = getDomain(node);
+  if (domain) {
+    domain.resolver = id;
 
-  if (id) {
-    let resolver = Resolver.load(id);
-    if (resolver == null) {
-      resolver = new Resolver(id);
-      resolver.domain = event.params.node.toHexString();
-      resolver.address = event.params.resolver;
-      resolver.save();
-      // since this is a new resolver entity, there can't be a resolved address yet so set to null
-      domain.resolvedAddress = null;
+    if (id) {
+      let resolver = Resolver.load(id);
+      if (resolver == null) {
+        resolver = new Resolver(id);
+        resolver.domain = event.params.node.toHexString();
+        resolver.address = event.params.resolver;
+        resolver.save();
+        // since this is a new resolver entity, there can't be a resolved address yet so set to null
+        domain.resolvedAddress = null;
+      } else {
+        domain.resolvedAddress = resolver.addr;
+      }
     } else {
-      domain.resolvedAddress = resolver.addr;
+      domain.resolvedAddress = null;
     }
-  } else {
-    domain.resolvedAddress = null;
+    saveDomain(domain);
   }
-  saveDomain(domain);
-
   let domainEvent = new NewResolver(createEventID(event));
   domainEvent.blockNumber = event.block.number.toI32();
   domainEvent.transactionID = event.transaction.hash;

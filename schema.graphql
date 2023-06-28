@@ -305,6 +305,8 @@ type Resolver @entity {
   twitter: String
   "The github handle for this token"
   github: String
+  "The discord handle for this token"
+  discord: String
   "The name for this token"
   name: String
   "The decimals for this token"

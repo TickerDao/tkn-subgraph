@@ -1,6 +1,13 @@
 // Import types and APIs from graph-ts
-import {Address, BigInt, ByteArray, ethereum, log} from "@graphprotocol/graph-ts";
-import {Account, Domain} from "./types/schema";
+import {
+  Address,
+  BigInt,
+  ByteArray,
+  Bytes,
+  ethereum,
+  log,
+} from "@graphprotocol/graph-ts";
+import { Account, Domain } from "./types/schema";
 
 export function createEventID(event: ethereum.Event): string {
   return event.block.number
@@ -9,13 +16,17 @@ export function createEventID(event: ethereum.Event): string {
     .concat(event.logIndex.toString());
 }
 
-export const ETH_NODE = "93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae";
-export const ROOT_NODE = "0x0000000000000000000000000000000000000000000000000000000000000000";
+export const ETH_NODE =
+  "93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae";
+export const ROOT_NODE =
+  "0x0000000000000000000000000000000000000000000000000000000000000000";
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
-
 export namespace constants {
-  export const TKN_LABEL = Address.fromString("DE0C1D6DBFBABD5AFF517A513D611C602B4DD4019C95AEB1094BBAA8BE785B71");
+  export const TKN_LABEL = Bytes.fromHexString(
+    "DE0C1D6DBFBABD5AFF517A513D611C602B4DD4019C95AEB1094BBAA8BE785B71"
+  );
 }
+export const TKN_DOMAIN = "0x3cDB9bC080Efe321A797E7286d302B90227cc6De";
 
 // Helper for concatenating two byte arrays
 export function concat(a: ByteArray, b: ByteArray): ByteArray {
@@ -42,10 +53,7 @@ export function byteArrayFromHex(s: string): ByteArray {
 }
 
 export function uint256ToByteArray(i: BigInt): ByteArray {
-  let hex = i
-    .toHex()
-    .slice(2)
-    .padStart(64, "0");
+  let hex = i.toHex().slice(2).padStart(64, "0");
   return byteArrayFromHex(hex);
 }
 
@@ -76,7 +84,10 @@ export function checkValidLabel(name: string): boolean {
       log.warning("Invalid label '{}' contained null byte. Skipping.", [name]);
       return false;
     } else if (c === 46) {
-      log.warning("Invalid label '{}' contained separator char '.'. Skipping.", [name]);
+      log.warning(
+        "Invalid label '{}' contained separator char '.'. Skipping.",
+        [name]
+      );
       return false;
     }
   }
