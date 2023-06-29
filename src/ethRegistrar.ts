@@ -1,7 +1,15 @@
 // Import types and APIs from graph-ts
-import {BigInt, ByteArray, Bytes, crypto, ens} from "@graphprotocol/graph-ts";
+import { BigInt, ByteArray, Bytes, crypto, ens } from "@graphprotocol/graph-ts";
 
-import {byteArrayFromHex, checkValidLabel, concat, constants, createEventID, ETH_NODE, uint256ToByteArray} from "./utils";
+import {
+  byteArrayFromHex,
+  checkValidLabel,
+  concat,
+  constants,
+  createEventID,
+  ETH_NODE,
+  uint256ToByteArray,
+} from "./utils";
 
 // Import event types from the registry contract ABI
 import {
@@ -10,7 +18,7 @@ import {
   Transfer as TransferEvent,
 } from "./types/BaseRegistrar/BaseRegistrar";
 
-import {NameRegistered as ControllerNameRegisteredEventOld} from "./types/EthRegistrarControllerOld/EthRegistrarControllerOld";
+import { NameRegistered as ControllerNameRegisteredEventOld } from "./types/EthRegistrarControllerOld/EthRegistrarControllerOld";
 
 import {
   NameRegistered as ControllerNameRegisteredEvent,
@@ -18,7 +26,14 @@ import {
 } from "./types/EthRegistrarController/EthRegistrarController";
 
 // Import entity types generated from the GraphQL schema
-import {Account, Domain, NameRegistered, NameRenewed, NameTransferred, Registration} from "./types/schema";
+import {
+  Account,
+  Domain,
+  NameRegistered,
+  NameRenewed,
+  NameTransferred,
+  Registration,
+} from "./types/schema";
 
 const GRACE_PERIOD_SECONDS = BigInt.fromI32(7776000); // 90 days
 
@@ -60,16 +75,29 @@ export function handleNameRegistered(event: NameRegisteredEvent): void {
   registrationEvent.save();
 }
 
-export function handleNameRegisteredByControllerOld(event: ControllerNameRegisteredEventOld): void {
-  if (event.params.name == "tkn") setNamePreimage(event.params.name, event.params.label, event.params.cost);
+export function handleNameRegisteredByControllerOld(
+  event: ControllerNameRegisteredEventOld
+): void {
+  if (event.params.name == "tkn")
+    setNamePreimage(event.params.name, event.params.label, event.params.cost);
 }
 
-export function handleNameRegisteredByController(event: ControllerNameRegisteredEvent): void {
-  if (event.params.name == "tkn") setNamePreimage(event.params.name, event.params.label, event.params.baseCost.plus(event.params.premium));
+export function handleNameRegisteredByController(
+  event: ControllerNameRegisteredEvent
+): void {
+  if (event.params.name == "tkn")
+    setNamePreimage(
+      event.params.name,
+      event.params.label,
+      event.params.baseCost.plus(event.params.premium)
+    );
 }
 
-export function handleNameRenewedByController(event: ControllerNameRenewedEvent): void {
-  if (event.params.name == "tkn") setNamePreimage(event.params.name, event.params.label, event.params.cost);
+export function handleNameRenewedByController(
+  event: ControllerNameRenewedEvent
+): void {
+  if (event.params.name == "tkn")
+    setNamePreimage(event.params.name, event.params.label, event.params.cost);
 }
 
 function setNamePreimage(name: string, label: Bytes, cost: BigInt): void {
@@ -93,21 +121,24 @@ function setNamePreimage(name: string, label: Bytes, cost: BigInt): void {
 
 export function handleNameRenewed(event: NameRenewedEvent): void {
   let label = uint256ToByteArray(event.params.id);
-  let registration = Registration.load(label.toHex())!;
-  let domain = Domain.load(crypto.keccak256(concat(rootNode, label)).toHex())!;
+  let registration = Registration.load(label.toHex());
+  if (registration) {
+    let domain = Domain.load(crypto.keccak256(concat(rootNode, label)).toHex());
+    if (domain) {
+      registration.expiryDate = event.params.expires;
+      domain.expiryDate = event.params.expires.plus(GRACE_PERIOD_SECONDS);
 
-  registration.expiryDate = event.params.expires;
-  domain.expiryDate = event.params.expires.plus(GRACE_PERIOD_SECONDS);
+      registration.save();
+      domain.save();
 
-  registration.save();
-  domain.save();
-
-  let registrationEvent = new NameRenewed(createEventID(event));
-  registrationEvent.registration = registration.id;
-  registrationEvent.blockNumber = event.block.number.toI32();
-  registrationEvent.transactionID = event.transaction.hash;
-  registrationEvent.expiryDate = event.params.expires;
-  registrationEvent.save();
+      let registrationEvent = new NameRenewed(createEventID(event));
+      registrationEvent.registration = registration.id;
+      registrationEvent.blockNumber = event.block.number.toI32();
+      registrationEvent.transactionID = event.transaction.hash;
+      registrationEvent.expiryDate = event.params.expires;
+      registrationEvent.save();
+    }
+  }
 }
 
 export function handleNameTransferred(event: TransferEvent): void {
