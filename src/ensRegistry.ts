@@ -122,10 +122,12 @@ function _handleNewOwner(event: NewOwnerEvent, isMigrated: boolean): void {
     ) {
       domain.name = label;
     } else {
-      parent = parent!;
-      let name = parent.name;
-      if (label && name) {
-        domain.name = label + "." + name;
+      parent = parent;
+      if (parent) {
+        let name = parent.name;
+        if (label && name) {
+          domain.name = label + "." + name;
+        }
       }
     }
   }
