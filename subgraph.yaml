@@ -1,6 +1,11 @@
 specVersion: 0.0.5
 description: A fork of the ENS subgraph that houses only the TKN data
 repository: ""
+features:
+  - grafting
+graft:
+  base: QmPE5rfJHxh51RBiMfvFF54KrW2RZ5PBrGo93uJnZ1TY6u
+  block: 17108560
 schema:
   file: ./schema.graphql
 dataSources:

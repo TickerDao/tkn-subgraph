@@ -67,10 +67,14 @@ export function createOrLoadAccount(address: string): Account {
   return account;
 }
 
-export function createOrLoadDomain(node: string): Domain {
+export function createOrLoadDomain(node: string, timestamp: BigInt = BigInt.fromI32(0), owner: string = ""): Domain {
   let domain = Domain.load(node);
   if (domain == null) {
     domain = new Domain(node);
+    domain.subdomainCount = 0;
+    domain.isMigrated = true;
+    domain.owner = owner;
+    domain.createdAt = timestamp;
     domain.save();
   }
 
