@@ -4,8 +4,8 @@ repository: ""
 features:
   - grafting
 graft:
-  base: QmPE5rfJHxh51RBiMfvFF54KrW2RZ5PBrGo93uJnZ1TY6u
-  block: 17108560
+  base: QmSAZqgjqfc2xp9KiaqbJ4PwAe9wnV7zAwQA7yurawHVVt
+  block: 12946097
 schema:
   file: ./schema.graphql
 dataSources:

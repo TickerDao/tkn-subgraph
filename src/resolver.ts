@@ -195,6 +195,7 @@ export function handleTextChangedWithValue(
   if (event.params.key == "version") {
     resolver.version = event.params.value;
   }
+  resolver.save();
 
   let resolverEvent = new TextChanged(createEventID(event));
   resolverEvent.resolver = createResolverID(event.params.node, event.address);
