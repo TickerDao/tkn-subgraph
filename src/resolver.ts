@@ -168,6 +168,9 @@ export function handleTextChangedWithValue(event: TextChangedWithValueEvent): vo
   if (event.params.key == "description") {
     resolver.description = event.params.value;
   }
+  if (event.params.key == "notice") {
+    resolver.notice = event.params.value;
+  }
   if (event.params.key == "keywords") {
     resolver.keywords = event.params.value;
   }
