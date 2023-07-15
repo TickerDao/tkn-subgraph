@@ -299,6 +299,8 @@ type Resolver @entity {
   avatar: String
   "The description for this token"
   description: String
+  "News or relevent info for this token"
+  notice: String
   "The keywords for this token"
   keywords: String
   "The twitter handle for this token"
