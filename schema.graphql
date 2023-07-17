@@ -295,6 +295,8 @@ type Resolver @entity {
   coinTypes: [BigInt!]
   "The URL for this token"
   url: String
+  " If the token has a notice to display "
+  notice: String
   "The avatar for this token"
   avatar: String
   "The description for this token"

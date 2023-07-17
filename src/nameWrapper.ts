@@ -78,7 +78,7 @@ export function handleNameWrapped(event: NameWrappedEvent): void {
   let blockNumber = event.block.number.toI32();
   let transactionID = event.transaction.hash;
   let owner = createOrLoadAccount(event.params.owner.toHex());
-  let domain = createOrLoadDomain(node.toHex());
+  let domain = createOrLoadDomain(node.toHex(), event.block.timestamp, owner.id);
 
   if (!domain.labelName && label) {
     domain.labelName = label;

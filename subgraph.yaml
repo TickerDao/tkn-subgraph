@@ -1,6 +1,11 @@
 specVersion: 0.0.5
 description: A fork of the ENS subgraph that houses only the TKN data
 repository: ""
+features:
+  - grafting
+graft:
+  base: QmSAZqgjqfc2xp9KiaqbJ4PwAe9wnV7zAwQA7yurawHVVt
+  block: 12946097
 schema:
   file: ./schema.graphql
 dataSources:
@@ -61,12 +66,58 @@ dataSources:
         - event: "NewTTL(indexed bytes32,uint64)"
           handler: handleNewTTLOldRegistry
   - kind: ethereum/contract
-    name: Resolver
+    name: Resolver_231b
     network: mainnet
     source:
       abi: Resolver
       address: "0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63"
       startBlock: 16925619
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/resolver.ts
+      entities:
+        - AddrChanged
+        - MulticoinAddrChanged
+        - NameChanged
+        - AbiChanged
+        - PubkeyChanged
+        - Textchanged
+        - ContenthashChanged
+        - InterfaceChanged
+        - AuthorisationChanged
+      abis:
+        - name: Resolver
+          file: ./abis/PublicResolver.json
+      eventHandlers:
+        - event: "ABIChanged(indexed bytes32,indexed uint256)"
+          handler: handleABIChanged
+        - event: "AddrChanged(indexed bytes32,address)"
+          handler: handleAddrChanged
+        - event: "AddressChanged(indexed bytes32,uint256,bytes)"
+          handler: handleMulticoinAddrChanged
+        - event: "AuthorisationChanged(indexed bytes32,indexed address,indexed address,bool)"
+          handler: handleAuthorisationChanged
+        - event: "ContenthashChanged(indexed bytes32,bytes)"
+          handler: handleContentHashChanged
+        - event: "InterfaceChanged(indexed bytes32,indexed bytes4,address)"
+          handler: handleInterfaceChanged
+        - event: "NameChanged(indexed bytes32,string)"
+          handler: handleNameChanged
+        - event: "PubkeyChanged(indexed bytes32,bytes32,bytes32)"
+          handler: handlePubkeyChanged
+        - event: "TextChanged(indexed bytes32,indexed string,string,string)"
+          handler: handleTextChangedWithValue
+        - event: "VersionChanged(indexed bytes32,uint64)"
+          handler: handleVersionChanged
+  - kind: ethereum/contract
+    name: Resolver_4976
+    network: mainnet
+    source:
+      abi: Resolver
+      address: "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41"
+      startBlock: 9412610
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -154,6 +205,7 @@ dataSources:
         - event: >-
             NameRegistered(string,indexed bytes32,indexed address,uint256,uint256)
 
+
           handler: handleNameRegisteredByControllerOld
         - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"
           handler: handleNameRenewedByController
@@ -177,6 +229,7 @@ dataSources:
       eventHandlers:
         - event: >-
             NameRegistered(string,indexed bytes32,indexed address,uint256,uint256,uint256)
+
 
           handler: handleNameRegisteredByController
         - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"
