@@ -1,4 +1,4 @@
-import { Address, Bytes, ethereum } from "@graphprotocol/graph-ts";
+import {Address, Bytes, ethereum} from "@graphprotocol/graph-ts";
 
 import {
   ABIChanged as ABIChangedEvent,
@@ -35,9 +35,7 @@ export function handleAddrChanged(event: AddrChangedEvent): void {
   let account = new Account(event.params.a.toHexString());
   account.save();
 
-  let resolver = new Resolver(
-    createResolverID(event.params.node, event.address)
-  );
+  let resolver = new Resolver(createResolverID(event.params.node, event.address));
   resolver.domain = event.params.node.toHexString();
   resolver.address = event.address;
   resolver.addr = event.params.a.toHexString();
@@ -75,9 +73,7 @@ export function handleMulticoinAddrChanged(event: AddressChangedEvent): void {
 
   let resolverAddress = ResolverAddress.load("id");
   if (!resolverAddress) {
-    resolverAddress = new ResolverAddress(
-      resolver.id + "-" + coinType.toHexString()
-    );
+    resolverAddress = new ResolverAddress(resolver.id + "-" + coinType.toHexString());
     resolverAddress.resolver = resolver.id;
     resolverAddress.coinType = coinType;
   }
@@ -147,9 +143,7 @@ export function handleTextChanged(event: TextChangedEvent): void {
   resolverEvent.save();
 }
 
-export function handleTextChangedWithValue(
-  event: TextChangedWithValueEvent
-): void {
+export function handleTextChangedWithValue(event: TextChangedWithValueEvent): void {
   let resolver = getOrCreateResolver(event.params.node, event.address);
 
   let key = event.params.key;
@@ -173,6 +167,9 @@ export function handleTextChangedWithValue(
   }
   if (event.params.key == "description") {
     resolver.description = event.params.value;
+  }
+  if (event.params.key == "notice") {
+    resolver.notice = event.params.value;
   }
   if (event.params.key == "keywords") {
     resolver.keywords = event.params.value;
@@ -229,9 +226,7 @@ export function handleInterfaceChanged(event: InterfaceChangedEvent): void {
   resolverEvent.save();
 }
 
-export function handleAuthorisationChanged(
-  event: AuthorisationChangedEvent
-): void {
+export function handleAuthorisationChanged(event: AuthorisationChangedEvent): void {
   let resolverEvent = new AuthorisationChanged(createEventID(event));
   resolverEvent.blockNumber = event.block.number.toI32();
   resolverEvent.transactionID = event.transaction.hash;
@@ -283,5 +278,8 @@ function createEventID(event: ethereum.Event): string {
 }
 
 function createResolverID(node: Bytes, resolver: Address): string {
-  return resolver.toHexString().concat("-").concat(node.toHexString());
+  return resolver
+    .toHexString()
+    .concat("-")
+    .concat(node.toHexString());
 }
