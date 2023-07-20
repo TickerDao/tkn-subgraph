@@ -4,6 +4,34 @@ This Subgraph sources events from the ENS contracts. This includes the ENS regis
 
 # Example Queries
 
+Current example TKN query:
+
+```
+query ($Symbol: String = "weth") {
+  domains(
+    where: {name_ends_with: ".tkn.eth", name_starts_with: $Symbol}
+  ) {
+    id
+    name
+    labelName
+    resolver {
+      version
+      url
+      description
+      twitter
+      github
+      discord
+      avatar
+      addresses {
+        address
+        coinType
+      }
+    }
+  }
+}
+```
+
+
 Here we have example queries, so that you don't have to type them in yourself eachtime in the graphiql playground:
 
 ```graphql
