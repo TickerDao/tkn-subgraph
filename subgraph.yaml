@@ -109,6 +109,8 @@ dataSources:
           handler: handlePubkeyChanged
         - event: "TextChanged(indexed bytes32,indexed string,string,string)"
           handler: handleTextChangedWithValue
+        - event: "TextChanged(indexed bytes32,indexed string,string)"
+          handler: handleTextChanged
         - event: "VersionChanged(indexed bytes32,uint64)"
           handler: handleVersionChanged
   - kind: ethereum/contract
@@ -155,6 +157,8 @@ dataSources:
           handler: handlePubkeyChanged
         - event: "TextChanged(indexed bytes32,indexed string,string,string)"
           handler: handleTextChangedWithValue
+        - event: "TextChanged(indexed bytes32,indexed string,string)"
+          handler: handleTextChanged
         - event: "VersionChanged(indexed bytes32,uint64)"
           handler: handleVersionChanged
   - kind: ethereum/contract
@@ -205,6 +209,7 @@ dataSources:
         - event: >-
             NameRegistered(string,indexed bytes32,indexed address,uint256,uint256)
 
+
           handler: handleNameRegisteredByControllerOld
         - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"
           handler: handleNameRenewedByController
@@ -228,6 +233,7 @@ dataSources:
       eventHandlers:
         - event: >-
             NameRegistered(string,indexed bytes32,indexed address,uint256,uint256,uint256)
+
 
           handler: handleNameRegisteredByController
         - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"
