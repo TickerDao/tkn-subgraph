@@ -4,7 +4,7 @@ repository: ""
 features:
   - grafting
 graft:
-  base: QmdEbzzTjRgUnB11aaMvrLghHKvhSAzLFzTgdEta3VBYeg
+  base: QmQTRnVPjL4EBkfUmGnYmYhru1coawv8ZSdy6s5ZJs8UMJ
   block: 12946097
 schema:
   file: ./schema.graphql
@@ -209,7 +209,6 @@ dataSources:
         - event: >-
             NameRegistered(string,indexed bytes32,indexed address,uint256,uint256)
 
-
           handler: handleNameRegisteredByControllerOld
         - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"
           handler: handleNameRenewedByController
@@ -233,7 +232,6 @@ dataSources:
       eventHandlers:
         - event: >-
             NameRegistered(string,indexed bytes32,indexed address,uint256,uint256,uint256)
-
 
           handler: handleNameRegisteredByController
         - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"
